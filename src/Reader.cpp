@@ -1,9 +1,12 @@
 #include "Reader.h"
 
-Reader::Reader(std::size_t k): k(k),  totalkgrams(0)
+Reader::Reader(std::size_t k, double alpha): k(k), alpha(alpha), totalkgrams(0)
 {
     if (k == 0) {
         throw std::invalid_argument("k must be positive.");
+    }
+    if (!std::isfinite(alpha) || alpha < 0.0) { 
+        throw std::invalid_argument("alpha must be non-negative and finite."); 
     }
 }
 
@@ -85,15 +88,24 @@ double Reader::probability(const std::string& kgram, char c) const
             charcount = chariterator->second;
         }
     }
-    if (totalTransitions == 0) {
+    //probability is the number of a specific char after k-gram divided by all the transitions
+    //with alpha 
+    double numerator = static_cast<double>(charcount) + alpha;
+    double denominator = static_cast<double>(totalTransitions) + alpha * alphabet.size();
+
+    if (denominator == 0.0) {
         return 0.0;
     }
-    //probability is the number of a specific char after k-gram divided by all the transitions
-    return static_cast<double>(charcount) / totalTransitions;
+
+    return numerator / denominator;
 }
 
 const std::set<char>& Reader::getAlphabet() const
 {
     return alphabet;
+}
+
+const std::unordered_map<std::string, std::size_t>& Reader::getkgramCounts() const { 
+    return kgramcounts; 
 }
 

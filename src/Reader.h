@@ -1,4 +1,3 @@
-
 #ifndef Reader_H
 #define Reader_H
 
@@ -12,7 +11,7 @@
 
 class Reader {
 public:
-    Reader(std::size_t k);
+    Reader(std::size_t k, double alpha = 0.0);
 
     void train(const std::string& text);
 
@@ -22,9 +21,11 @@ public:
 
     const std::set<char>& getAlphabet() const;
 
+    const std::unordered_map<std::string, std::size_t>& getkgramCounts() const;
+
 private:
     std::size_t k;
-    double alpha; //later!
+    double alpha; 
 
     std::set<char> alphabet;
 
